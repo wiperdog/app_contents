@@ -481,8 +481,7 @@ if(datajson != null &amp;&amp; datajson != ""){
             GroovyShell shell = new GroovyShell()
             def obj = shell.evaluate(closureStr)
             def binding = obj.getBinding()
-            for(def key in params.keySet()){
-                def value = params[key]
+            params.each{key, value-&gt;
                 try{
                     value = Double.valueOf(value)
                 }catch(NumberFormatException nfe){
@@ -513,16 +512,14 @@ def getLevel(condition, mapConditionLevel, group = null){
     if(mapConditionLevel != null &amp;&amp; mapConditionLevel.size() &gt; 0){
        if(group == null){
            // Store
-           for(def key in mapConditionLevel.keySet()){
-               def value = mapConditionLevel[key]
+           mapConditionLevel.each{key, value-&gt;
                if(condition == key){
                    ret = value
                }
            }
        }else{
            // Subtyped
-           for(def key in mapConditionLevel[group].keySet()){
-               def value = mapConditionLevel[group][key]
+           mapConditionLevel[group].each{key, value-&gt;
                if(condition == key){
                    ret = value
                }
@@ -553,8 +550,7 @@ def generatePolicyString(data, listKey, type, mapConditionLevel){
   policyStr += "\tdef ret = ['jobName' : '" + data.jobName + "', 'istIid' : '" + data.instanceName + "']\n"
      def mapPolicy = data.mappolicy
      policyStr += "\tresultData.each{data-&gt;\n"
-     for(def key in mapPolicy.keySet()){
-      def value = mapPolicy[key]
+     mapPolicy.each {key,value -&gt;
       key = key.trim()
       if(key[0] != "("){
            key = "(" + key
@@ -577,13 +573,11 @@ def generatePolicyString(data, listKey, type, mapConditionLevel){
             policyStr += "\tdef listMess = []\n"
             policyStr += "\tdef ret = ['jobName' : '" + data.jobName + "', 'istIid' : '" + data.instanceName + "']\n"
             policyStr += "\tresultData.each {key,value -&gt;\n"
-            for(def keyData in data.mappolicy.keySet()){
-                def valueData = data.mappolicy[keyData]
+            data.mappolicy.each {keyData,valueData -&gt;
                 if(valueData != [:]) {
                     policyStr += "\t\tif(key == \"" + keyData + "\") {\n"
                     policyStr += "\t\t\tvalue.each {data -&gt;\n"
-                    for(def key in valueData.keySet(){
-                        def value = valueData[key]
+                    valueData.each {key,value -&gt;
                         // If
                         policyStr += "\t\t\t\tif(" + getDataConditionsAfterEdit(key, listKey) + "){\n"
                         // Message
@@ -666,7 +660,7 @@ def getDataMessageAfterEdit(String stringOfMessage, dataKey){
 }
 def convertListToString (List listData, String concatStr = "|"){
  def strRet = ""
-  for(def key in listData){
+  listData.each {key-&gt;
     strRet += key + concatStr
   }
   if (strRet != "") {

@@ -440,21 +440,21 @@
                 if (unit == null) {
                     unit = [:]
                 }
-		for(datChart in dataChart){
-			type = datChart.type
+		dataChart.each {
+			type = it.type
 			if(type == "bar") {
                                 resultData = []
 				// get data to draw bar chart
-                                def chart_columns = datChart.chart_columns
-				def hint_columns = datChart.hint_columns
+                                def chart_columns = it.chart_columns
+				def hint_columns = it.hint_columns
 				if (hint_columns == null ){
 					hint_columns = []
-					for(resDat in result[0].data[0]){
-						hint_columns.add(resDat.key)
+					result[0].data[0].each{
+						hint_columns.add(it.key)
 					}
 				}
 				def finalData = [:]
-				for(chartColumn in chart_columns){
+				chart_columns.each {chartColumn -&gt;
 					def KEYEXPR
 					def dataToDraw = [:]
 					def dataToToolTip = [:]
@@ -465,7 +465,7 @@
 					finalData['xAxis'] = mapCategories
 
                                         // chart_name
-					finalData['chart_name'] = chartColumn.name
+					finalData['chart_name'] = it.name
 
 					// Chart Column and Hint Column
 					finalData['chart_columns'] = chart_columns
@@ -476,28 +476,28 @@
 					}
 					if(KEYEXPR != null) {
 						def lstKey = []
-						for(record in result){
-							for(dat in record.data){
+						result.each{record-&gt;
+							record.data.each {dat-&gt;
 								def tmp = []
-								for(keyEXPR in KEYEXPR){
-									tmp.add(dat[keyEXPR])
+								KEYEXPR.each{
+									tmp.add(dat[it])
 								}
 								if(!lstKey.contains(tmp)){
 									lstKey.add(tmp)
 								}
 							}
 						}
-						for(data in result['data']){
-							for(keySet in lstKey){
+						result['data'].each {data-&gt;
+							lstKey.each {keySet-&gt;
 								def dataChartColumn
 								def key = ""
-								for(keyS in keySet){ key += keyS + "." }
+								keySet.each{ key += it + "." }
 								key = key.substring(0, key.length()-1)
 
 								if(dataToDraw[key] == null){
 									dataToDraw[key] = []
 								}
-								for(dat in data){
+								data.each {dat-&gt;
 									def isData = true
 									for(int i = 0; i&lt; KEYEXPR.size(); i++){
 										isData = isData &amp;&amp; (dat[KEYEXPR[i]] == keySet[i])
@@ -511,31 +511,30 @@
 						}
 
 						def series = []
-						for(dat2Draw in dataToDraw){
+						dataToDraw.each{
 							def tmp = [:]
-							tmp['name'] = dat2Draw.key
-							tmp['data'] = dat2Draw.value
+							tmp['name'] = it.key
+							tmp['data'] = it.value
 							series.add(tmp)
 						}
 						finalData['series'] = series
 
 						// get detail data to draw tooltip
 						def hintData = [:]
-						for(elementResult in result){
-							for(elementData in elementResult['data']){
+						result.each {elementResult -&gt;
+							elementResult['data'].each {elementData -&gt;
 								def mapHintData = [:]
 								mapHintData['fetchAt'] = elementResult.fetchAt
-								for(elementHint in hint_columns){
+								hint_columns.each {elementHint -&gt;
 									mapHintData[elementHint] = elementData[elementHint]
-									for(key in unit.keySet()){
-                                                                                def value = unit[key]
+									unit.each{key, value -&gt;
 										if(elementHint == key) {
 											mapHintData[elementHint] = elementData[elementHint] + " ( " + value + " )"
 										}
 									}
 								}
 								def key = ""
-								for(eKeyexpr in KEYEXPR){
+								KEYEXPR.each {eKeyexpr -&gt;
 									key += elementData[eKeyexpr] + "."
 								}
 								key = key.substring(0, key.length()-1)
@@ -548,8 +547,7 @@
 						}
 						def detail_data = []
 						def mapFinalData = [:]
-						for(key in hintData.keySet()){
-                                                        def value = hintData[key]
+						hintData.each {key,value -&gt;
 							mapFinalData['name'] = key
 							mapFinalData['data'] = value
 							detail_data.add(mapFinalData)
@@ -562,21 +560,20 @@
 						def tmp = [:]
 						tmp['name'] = chartColumn
 						tmp['data'] = []
-						for(res in result){
-							tmp['data'].add(res.data[0][chartColumn])
+						result.each {
+							tmp['data'].add(it.data[0][chartColumn])
 						}
 						series.add(tmp)
 						finalData['series'] = series
 
 						// detail_data
 						def hintData = []
-						for(elementResult in result){
+						result.each {elementResult -&gt;
 							def mapHintData = [:]
 							mapHintData['fetchAt'] = elementResult.fetchAt
-							for(elementHint in hint_columns){
+							hint_columns.each {elementHint-&gt;
 							        mapHintData[elementHint] = elementResult.data[0][elementHint]
-								for(key in unit.keySet()){
-                                                                        def value = unit[key]
+								unit.each{key, value -&gt;
 									if(elementHint == key) {
 										mapHintData[elementHint] = elementResult.data[0][elementHint] + " ( " + value + " )"
 									}
@@ -616,15 +613,15 @@
              def categories = []
              def listNameKey = []
 
-             for(record in collection){
+             collection.each{record-&gt;
              	categories.add(record.fetchAt)
              }
 
-             for(record in collection){
+             collection.each {record-&gt;
              	def data = record['data']
-             	for(dat in data){
+             	data.each {dat-&gt;
              		def datName
-		        for(keyRoot in key_root){
+		        key_root.each{keyRoot-&gt;
              			if(datName == null){
 		             		datName = dat[keyRoot]
              			}else{
@@ -637,13 +634,13 @@
              	   }
              }   
 
-             for(chart in key_chart){
+             key_chart.each{chart-&gt;
              	if(chart.type == "line"){
              		def result = [:]
 		        def collumns = chart.chart_columns
                         def hintColumns = chart.chart_columns.clone()
 		        if(chart.hint_columns != null){
-			    for(hintCol in chart.hint_columns){
+			    chart.hint_columns.each{hintCol-&gt;
 				if(!hintColumns.contains(hintCol)){
 					hintColumns.add(hintCol)
 				}
@@ -653,7 +650,7 @@
              		result.xAxis.categories = categories
                         def chartName
                         def title = chart.name
-		        for(col in collumns){
+		        collumns.each{col-&gt;
              		    if(chartName != null){
 		      		chartName += "_" + col
              		    }else {
@@ -666,8 +663,8 @@
                         result.hint_columns = hintColumns
              		result.detail_data = []
                         result.title = title
-             		for(nameKey in listNameKey){
-		             for(col in collumns){
+             		listNameKey.each{nameKey-&gt;
+		             collumns.each{col-&gt;
              			def seriesRecord = [:]
 				def detailDataRecord = [:]
 		             	if(nameKey != null){
@@ -679,13 +676,13 @@
 				}
 		             	seriesRecord['data'] = []
              			detailDataRecord['data'] = []
-				for(record in collection){
+				collection.each {record-&gt;
 		             		boolean hasData = false
              				def data = record['data']
 				        def eachData
-		             		for(dat in data){
+		             		data.each{dat-&gt;
              				     def datName
-				             for(keyRoot in key_root){
+				             key_root.each{keyRoot-&gt;
 				             	if(datName == null){
 		             			        datName = dat[keyRoot]
              					}else{
@@ -702,7 +699,7 @@
                                               def fullDetailData = [:]
 		             		      fullDetailData.fetchAt = record.fetchAt
              				      if(hintColumns != null){
-						 for(hintCol in hintColumns){
+						 hintColumns.each{hintCol-&gt;
 				             	     fullDetailData[hintCol] = eachData[hintCol]  + (key_unit[hintCol] != null ? ("( " + key_unit[hintCol] + " )") : "") 
 		             			 }
              				      }else{
@@ -736,12 +733,12 @@
 		def resultData
                 def finalResultData = []
                 def numOfChart
-		for(elementChart in dataChart){
+		dataChart.each {elementChart -&gt;
 			type = elementChart.type
 			if(type == "pie") {
                                 numOfChart = 0
                                 resultData = []
-				for(elementData in result.data){
+				result.data.each {elementData -&gt;
 					def dataPie = [:]
 					dataPie['type'] = "pie"
                                         dataPie['chart_name'] = elementChart.name
@@ -752,10 +749,10 @@
                                         }
 
 					dataPie['data'] = []
-					for(elementChartCol in elementChart.chart_columns){
+					elementChart.chart_columns.each {
 						def tmp = []
-						tmp.add(elementChartCol)
-						tmp.add(elementData[elementChartCol])
+						tmp.add(it)
+						tmp.add(elementData[it])
 						dataPie['data'].add(tmp)
 					}
 
@@ -765,8 +762,8 @@
 					}
 					dataPie['name'] = ""
 					if(KEYEXPR != null) {
-						for(keyEXPR in KEYEXPR){
-							dataPie['name'] += elementData[keyEXPR] + "."
+						KEYEXPR.each {
+							dataPie['name'] += elementData[it] + "."
 						}
 						dataPie['name'] = dataPie['name'].substring(0, dataPie['name'].length()-1)
 					} else {
@@ -794,7 +791,7 @@
                     unit = [:]
                 }
 
-		for(itemDataChart in dataChart){
+		dataChart.each {itemDataChart -&gt;
 			type = itemDataChart.type
 			if(type == "area") {
 				resultData = []
@@ -815,13 +812,13 @@
 					def series = []
 					def listFinalData = []
 					def detail_data = []
-					for(chartColumn in chart_columns){
+					chart_columns.each {chartColumn -&gt;
 
 						// series
 						def tmp = [:]
 						tmp['name'] = chartColumn
 						tmp['data'] = []
-						for(itemResult in result){
+						result.each {itemResult -&gt;
 							if (itemResult.data[0] != null) {
 								tmp['data'].add(itemResult.data[0][chartColumn])
 							} else {
@@ -837,11 +834,11 @@
 					finalData = [:]
 				} else { // KEYEXPR has _root
 					lstKey = []
-					for(record in result){
-						for(dat in record.data){
+					result.each{record-&gt;
+						record.data.each {dat-&gt;
 							def tmp = []
-							for(keyExpRo in keyExprRoot){
-								tmp.add(dat[keyExpRo])
+							keyExprRoot.each{
+								tmp.add(dat[it])
 							}
 							if(!lstKey.contains(tmp)){
 								lstKey.add(tmp)
@@ -849,31 +846,31 @@
 						}
 					}
 					def itemList = []
-					for(keySet in lstKey){
+					lstKey.each {keySet -&gt;
 						// xAxis
 						def mapCategories = [:]
 						mapCategories['categories'] = result['fetchAt']
 						finalData['xAxis'] = mapCategories
 						
 						def valueOfKey = ""
-						for(keys in keySet){
-							valueOfKey += keys + "."
+						keySet.each{
+							valueOfKey += it + "."
 						}
 						valueOfKey = valueOfKey.substring(0, valueOfKey.length()-1)
 						finalData['chart_name'] = itemDataChart.name + " (" + valueOfKey + ")"
                                                 itemList.add(valueOfKey.replaceAll("\\.","_"))
 						finalData['series'] = []
 						def mapSeries
-						for(itemChart in chart_columns){
+						chart_columns.each {itemChart -&gt;
 							mapSeries = [:]
 							mapSeries['name'] = itemChart
 							mapSeries['data'] = []
 							def isHasData
-							for(oneRunData in result['data']){
+							result['data'].each {oneRunData -&gt;
 								isHasData = false
-								for(itemData in oneRunData){
+								oneRunData.each {itemData -&gt;
 									def dataKey = ""
-									for(itemKeyExpr in keyExprRoot){
+									keyExprRoot.each {itemKeyExpr -&gt;
 										 dataKey += itemData[itemKeyExpr] + "."
 									}
 									dataKey = dataKey.substring(0, dataKey.length()-1)
@@ -906,14 +903,14 @@
 	  def mapForKey = [:]
 	  
 	  def listKey = []
-	  for(datSub in dataSubtype[0]['data']){
-		  listKey.add(datSub.key)
+	  dataSubtype[0]['data'].each {
+		  listKey.add(it.key)
 	  }
-	  for(keySubtype in listKey){
+	  listKey.each {keySubtype -&gt;
 		  mapForKey[keySubtype] = []
-		  for(eachRunJob in dataSubtype){
+		  dataSubtype.each {eachRunJob -&gt;
 			  def dataStoreKey = [:]
-			  for(eRunJob in eachRunJob){
+			  eachRunJob.each {eRunJob -&gt;
 				  if(eRunJob.key == "data") {
 					  // process data job
 					  dataStoreKey['data'] = eachRunJob['data'][keySubtype]
@@ -927,9 +924,9 @@
 					  // chart of keyexpr
 					  if(eachRunJob.KEYEXPR._chart instanceof Map) {
 						  // chart is map data
-						  for(keys in eachRunJob.KEYEXPR._chart.keySet()){
-							  if(keySubtype == keys) {
-								  mapKeyexpr['_chart'] = eachRunJob['KEYEXPR']['_chart'][keys]
+						  eachRunJob.KEYEXPR._chart.keySet().each {
+							  if(keySubtype == it) {
+								  mapKeyexpr['_chart'] = eachRunJob['KEYEXPR']['_chart'][it]
 							  }
 						  }
 					  } else {
@@ -938,9 +935,9 @@
 					  // unit of keyexpr
                                           //Check if unit by key of subtype
                                           if (eachRunJob.KEYEXPR._unit != null){
-                                              for(keys in eachRunJob.KEYEXPR._unit.keySet()){
-						  if(keySubtype == keys) {
-							mapKeyexpr['_unit'] = eachRunJob['KEYEXPR']['_unit'][keys]
+                                              eachRunJob.KEYEXPR._unit.keySet().each {
+						  if(keySubtype == it) {
+							mapKeyexpr['_unit'] = eachRunJob['KEYEXPR']['_unit'][it]
 				                  }
 					      } 
                                               if (mapKeyexpr['_unit'] == null) {

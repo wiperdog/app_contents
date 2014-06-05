@@ -448,7 +448,7 @@ try {
      if(jobName == null || jobName == "") {
          def mapNameAndType = [:]
          def type
-         for(eCollec in lstJobMongo){
+         lstJobMongo.each {eCollec -&gt;
              type = gmongoObject.getDataType(eCollec)
              mapNameAndType[eCollec] = type
          }
@@ -466,23 +466,17 @@ try {
                  def mapSampleData = [:]
                  def mapSampleUnit = [:]
                  def resultJob = gmongoObject.getDataAllFields(eCollection)[0]
-                 def mapUnit = [:]
-                 try {
-                 	mapUnit = resultJob.KEYEXPR._unit
-                 } catch (Exception ex) {
-                 }
+                 def mapUnit = resultJob.KEYEXPR._unit
                  if(resultJob.type == "Store") {
                      def cloneSampleData = [:]
                      mapSampleData = resultJob.data[0]
-                     for(key in mapSampleData.keySet()){
-                         def value = mapSampleData[key]
+                     mapSampleData.each {key,value -&gt;
                          if(value.toString().contains("\\")){
                              value = value.replaceAll("\\\\","/")
                          }
                          cloneSampleData[key] = value
                          def checkExits = false
-                         for(keyUnit in mapUnit.keySet()){
-                             def valueUnit = mapUnit[keyUnit]
+                         mapUnit.each {keyUnit, valueUnit -&gt;
                              if(key == keyUnit) {
                                  checkExits = true
                                  def keyResp = key + " (" + valueUnit + ")"
@@ -498,14 +492,12 @@ try {
                      mapFinalPolicy["TYPE"] = resultJob.type
                  } else if(resultJob.type == "Subtyped") {
                      def lstKey = resultJob.data.keySet()
-                     for(eKey in lstKey){
+                     lstKey.each {eKey -&gt;
                          def tmpMapUnit = [:]
                          mapSampleData[eKey] = resultJob.data[eKey][0]
-                         for(key in resultJob.data[eKey][0].keySet()){
-                             def value = resultJob.data[eKey][0][key]
+                         resultJob.data[eKey][0].each {key, value -&gt;
                              def checkExits = false
-                             for(keyUnit in mapUnit.keySet()){
-                                 def valueUnit = mapUnit[keyUnit]
+                             mapUnit.each {keyUnit, valueUnit -&gt;
                                  if(key == keyUnit) {
                                      checkExits = true
                                      def keyResp = key + " (" + valueUnit + ")"

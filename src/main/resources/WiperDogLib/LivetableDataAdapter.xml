@@ -470,7 +470,7 @@
             }
         }
 		def idx =0               
-		for(rec in result){
+		result.each{rec-&gt;		
 			//-- get a list of data row
 			legacyData = rec['data']
 			subtractData = []
@@ -482,7 +482,7 @@
 				subtractData = subTypeDataList
 			}	
             
-			for(r2 in subtractData){
+			subtractData.each{r2-&gt;
 					def livetableRows = [:]
 					livetableRows['id'] = rec['fetchAt'] + "_" + idx				
 					//-- replace CRLF in values to avoid JSON.parse error				
@@ -490,7 +490,7 @@
 					livetableRows['cell'] = []
                     def newdate = new Date().parse("yyyyMMddHHmmssz", rec['fetchAt'])
                     livetableRows['cell'].add(newdate.format('yyyy/MM/dd HH:mm:ss z'))
-					for(s in values){
+					values.each{s-&gt;
 					    if(s instanceof java.lang.String){
 						    def newVal = s.replaceAll("\\\\","/")
 							s = newVal.replaceAll("\r\n","")
@@ -555,7 +555,7 @@
 				//-- Building data model				
 				def model = []
 				def colSpec
-				for(name in dataModel){
+				dataModel.each{name-&gt;
 				    colSpec = [:]
 					colSpec['name'] = name
 					colSpec['index'] = name

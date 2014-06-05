@@ -436,8 +436,7 @@ class GetServlet{
 			if(conf.exists()){
 				params = shell.evaluate(conf)['servlet_config']
 				if( params != null &amp;&amp; params != []){
-					for(key in defaultParams.keySet()){
-                                                def value = defaultParams[key]
+					defaultParams.each{ key,value -&gt;
 						def paramsKeys = params.keySet()
 						if(!paramsKeys.contains(key)){
 							params[key] = value
