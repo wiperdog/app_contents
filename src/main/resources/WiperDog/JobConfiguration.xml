@@ -10,8 +10,8 @@
   <parent>WiperDog.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <date>1411109482000</date>
-  <contentUpdateDate>1411107915000</contentUpdateDate>
+  <date>1412052645000</date>
+  <contentUpdateDate>1411352505000</contentUpdateDate>
   <version>1.1</version>
   <title>JobConfiguration</title>
   <comment/>
@@ -1238,7 +1238,10 @@ require(['jquery'], function($) {&#xd;
                     setErrorMessage("err_formattext","#messageFormatText");&#xd;
                     checkValid = false&#xd;
                 }else{&#xd;
-                    jobMap['format'] = standardRoot(format);&#xd;
+                    if (format.indexOf("[") != 0) {&#xd;
+                         format = "[ " + format + " ]"&#xd;
+                    }&#xd;
+                    jobMap['format'] =  format;&#xd;
                 }&#xd;
             }&#xd;
         }&#xd;
@@ -1584,12 +1587,9 @@ require(['jquery'], function($) {&#xd;
     */&#xd;
     function standardClosure(strClosure) {&#xd;
         if (strClosure.indexOf("{") != 0) {&#xd;
-            strClosure = "{\n" + strClosure&#xd;
+            strClosure = "{\n" + strClosure + "\n}"&#xd;
         }&#xd;
         strClosure = strClosure.trim()&#xd;
-        if (strClosure.charAt(strClosure.length - 1) != "}") {&#xd;
-            strClosure = strClosure + "\n}"&#xd;
-        }&#xd;
         return strClosure&#xd;
     }&#xd;
 &#xd;
