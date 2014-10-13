@@ -4212,6 +4212,8 @@ function drawMenu(){
                             url:url,
                             async:false,
                             success : function(result){
+                                  if( typeof result.tree !== 'undefined' ) {
+                                      if(result.tree != null ) {
                                   var strMenu = "&lt;div id='nav'&gt;&lt;a href=\"javascript:ddtreemenu.flatten('treemenu2', 'expand')\"&gt;Expand All&lt;/a&gt; ||&lt;a href=\"javascript:ddtreemenu.flatten('treemenu2', 'contact')\"&gt;Collapse All&lt;/a&gt;"
                                   strMenu += result.tree
 		                  strMenu += "&lt;/div&gt;"
@@ -4219,12 +4221,21 @@ function drawMenu(){
                                   ddtreemenu.createTree("treemenu2", true, 5)
 
                                   createMapIstIid(result.mapIstIid)
+                                  } else {
+                                    alert("No data for this page ! Please run job to collecting data before using this page ")
+                                  }
+                                  } else {
+                                    alert("Failed to get data from MongoDB ! Please start MongoDB before using this page")
+                                  }
                              },
                             error: function(xhr,status,error){
+                               alert("Failed to drawing menu ! Please start Wiperdog server before using this page ")
                             }
                         });
+
                 },
                 error: function(xhr,status,error){
+                   alert("Failed to drawing menu ! Check configuration to Wiperdog server for connection between XWiki and Wiperdog")
                 }
                });
 }
