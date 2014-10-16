@@ -3759,7 +3759,8 @@ function init(){
 
                  //Load data and display to table
 		 var $divTableSumary =  $("&lt;br/&gt;&lt;span class = 'chartDesc'&gt;Statistics data &amp;nbsp;&lt;/span&gt;&lt;span class = 'showHideLink'&gt;&lt;a class='toggleLiveTableContainer' id = 'show'&gt;Hide data table  &lt;/a&gt;&lt;/span&gt;&lt;hr/&gt;").appendTo("#chart");
-                 var $divSubtype = $("&lt;table id='livetableList' style='width:100%;align:center'&gt;&lt;/table&gt;").appendTo("#chart");
+                 var $divLiveTableList = $("&lt;table id='livetableList' style='width:100%;align:center'&gt;&lt;/table&gt;").appendTo("#chart");
+                 var $divPager = $("&lt;div id='livetablePager' style='position:relative;width:100%'&gt;&lt;/div&gt;").appendTo("#chart");
                  generateLiveTable(data, jobname, limit, istIid, fromDate, toDate, key)                  
               } else if(jobType == "Subtyped"){
                  if(listKey != null &amp;&amp;  listKey.length != 0) {
@@ -3769,9 +3770,9 @@ function init(){
                          //Draw chart subtyped
                          drawchart(listKey[i], result[listKey[i]]['Chart'], jobType, fromDate, toDate)
 			 var $divTableSumary =  $("&lt;br/&gt;&lt;span class = 'chartDesc'&gt;Statistics data for "+listKey[i]+ "&amp;nbsp;&lt;/span&gt;&lt;span class = 'showHideLink'&gt;&lt;a        class='toggleLiveTableContainer' id = 'show'&gt;Hide data table  &lt;/a&gt;&lt;/span&gt;&lt;hr/&gt;").appendTo("#chart");
-
-                         var $divSubtype = $("&lt;table id='livetableList_" + listKey[i] + "' style='width:100%;align:center'&gt;&lt;/table&gt;").appendTo("#chart");
-                    }
+                         var $divLiveTableList  = $("&lt;table id='livetableList_" + listKey[i] + "' style='width:100%;align:center'&gt;&lt;/table&gt;").appendTo("#chart");
+                         var $divPager = $("&lt;div id='livetablePager_"+listKey[i] +"' style='position:relative;width:100%'&gt;&lt;/div&gt;").appendTo("#chart");
+}
                     generateLiveTable(data, jobname, limit, istIid, fromDate, toDate, listKey)
                  }
               }
