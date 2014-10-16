@@ -7005,11 +7005,13 @@ function processLivetableSuccessor(result, subtypedKeys){
 				for(var i = 0; i &lt; listData.length; i++){
 					$("#livetableList" + '_' + keySubtyped).jqGrid('addRowData', i, listData[i]);
 				}
+				$('#livetableList' + '_' + keySubtyped).trigger( 'reloadGrid' );
 			}
 		} else {
 			for(var i = 0; i &lt; resultObj.length; i++){
  				$("#livetableList").jqGrid('addRowData', i, resultObj[i])
 			}
+			  $('#livetableList').trigger( 'reloadGrid' );
 		}
 	}
 	jQuery.noConflict()
