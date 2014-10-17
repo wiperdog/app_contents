@@ -167,7 +167,12 @@ $xwiki.ssx.use("WiperDogLib.CommonMessage")
 		&lt;td>&lt;textarea style="width:100%" id="sequenceText" tabindex="19" placeholder="WaitsPct">&lt;/textarea>&lt;/td>
 	&lt;/tr>
 &lt;/table>
-
+&lt;table class="keyExprValues descriptionText">
+	&lt;tr>
+		&lt;th>KEYEXPR._description&lt;/th>
+		&lt;td>&lt;textarea style="width:100%" id="descriptionText" tabindex="20" placeholder='"D": "Top 10 database increase storage fastest this time", "M": "Top 20 database of storage usage"'>&lt;/textarea>&lt;/td>
+	&lt;/tr>
+&lt;/table>
 &lt;table class="keyExprValues">
 	&lt;tr>
 		&lt;th>KEYEXPR._unit&lt;/th>
@@ -425,8 +430,10 @@ require(['jquery'], function($) {&#xd;
             var valueSelect = $("#listSendType option:selected").val()&#xd;
             if (valueSelect == "Subtyped") {&#xd;
                 $("#groupChartText").removeAttr("disabled");&#xd;
+                $(".descriptionText").show();
             } else {&#xd;
                 $("#groupChartText").attr("disabled","disabled");&#xd;
+                $(".descriptionText").hide();
             }&#xd;
         });&#xd;
 &#xd;
@@ -950,6 +957,7 @@ require(['jquery'], function($) {&#xd;
         var actionOfJob = ''&#xd;
         &#xd;
         $(".osInfoForm").hide();&#xd;
+        $(".descriptionText").hide();
         showHideActionForm({"#showHideQueryForm": 1, "#showHideQueryVariablesForm": 1, "#showHideDbexecForm": 0, "#showHideDbexecVariablesForm": 0, "#showHideCommandForm": 0, "#showHideFormatForm": 0, "#showHideFetchactionForm": 0});&#xd;
     }&#xd;
 &#xd;
@@ -1371,6 +1379,12 @@ require(['jquery'], function($) {&#xd;
             KEYEXPR['_sequence'] = _sequence&#xd;
         }&#xd;
 &#xd;
+        var _description = ""&#xd;
+        if (document.getElementById('descriptionText').value != "") {&#xd;
+            _description = standardRoot(document.getElementById('descriptionText').value)&#xd;
+            KEYEXPR['_description'] = _description&#xd;
+        }&#xd;
+&#xd;
         var _unit = ""&#xd;
         if (document.getElementById('unitText').value != "") {&#xd;
             _unit = standardRoot(document.getElementById('unitText').value);&#xd;
@@ -1709,6 +1723,7 @@ function resetControl(type) {&#xd;
 		// Reset form&#xd;
 		$("#form1")[0].reset();&#xd;
 &#xd;
+		$(".descriptionText").hide();&#xd;
 		// Reset table data&#xd;
 		$("#chartTable").find("tr:gt(1)").remove();&#xd;
 		$("#paramJobTable").find("tr:gt(0)").remove();&#xd;
@@ -2044,6 +2059,7 @@ function bindingData(result) {&#xd;
 		}&#xd;
 		// ---- DATA IS STORE&#xd;
 		if (valSendType == "Store") {&#xd;
+                    $(".descriptionText").hide()&#xd;
 		    // Root&#xd;
 		    var keyExpr = result.Job.KEYEXPR&#xd;
 		    var rootStr = ""&#xd;
@@ -2116,6 +2132,7 @@ function bindingData(result) {&#xd;
     		htmlChartSource += '&lt;tr id="inputChart">&lt;td>&lt;input type="text" id="groupChartText" tabindex="21" disabled placeholder="TestGroup"/>&lt;div id="messageChartGroup">&lt;/div>&lt;/td>&lt;td>&lt;select id="listChartType" tabindex="22">&lt;option id="none" value="pie">pie&lt;/option>&lt;option id="none" value="line">line&lt;/option>&lt;option id="none" value="bar">bar&lt;/option>&lt;option id="none" value="area">area&lt;/option>&lt;/select>&lt;div id="messageChartType">&lt;/div>&lt;/td>&lt;td>&lt;input type="text" id="nameChartText" tabindex="23" placeholder="Logbuffer waits count"/>&lt;div id="messageChartName">&lt;/div>&lt;/td>&lt;td class="td_button">&lt;input type="text" id="chartColumnsText" tabindex="24" placeholder="WaitsCnt"/>&lt;div id="messageChartColumn">&lt;/div>&lt;/td>&lt;td>&lt;input type="text" id="hintColumnsText" tabindex="25" placeholder="WritesCnt, OsLogWrittenCnt, WaitsPct"/>&lt;/td>&lt;td class="td_button">&lt;input type="button" value="Add" class="add_btn button" id="updateChartInfo" tabindex="26"/>&lt;/td>&lt;/tr>';&#xd;
 		} else if (valSendType == "Subtyped") {&#xd;
 		// ---- DATA IS SUBTYPED&#xd;
+                    $(".descriptionText").show()&#xd;
 		    // Sequence&#xd;
 		    var mapSequence = result.Job.KEYEXPR._sequence&#xd;
 		    var resultSeq = ""&#xd;
@@ -2133,6 +2150,12 @@ function bindingData(result) {&#xd;
 		        }&#xd;
 		    }&#xd;
 		    $("#sequenceText").val(resultSeq)&#xd;
+&#xd;
+		    // Description&#xd;
+		    var mapDes = result.Job["KEYEXPR._description"]&#xd;
+		    if (mapDes != null) {&#xd;
+		        $("#descriptionText").val(JSON.stringify(mapDes))&#xd;
+		    }&#xd;
 &#xd;
 		    // Chart&#xd;
 		    var mapChart = result.Job["KEYEXPR._chart"]&#xd;
@@ -2200,7 +2223,7 @@ function bindingData(result) {&#xd;
 		    var mapKeyexpr = result.Job.KEYEXPR&#xd;
 		    var resultRoot = ""&#xd;
 		    for (var key in mapKeyexpr) {&#xd;
-		        if (key == "_sequence" || key == "_unit" || key == "_chart") {&#xd;
+		        if (key == "_sequence" || key == "_unit" || key == "_chart" || key == "_description") {&#xd;
 		            delete mapKeyexpr[key]&#xd;
 		        }&#xd;
 		    }&#xd;
