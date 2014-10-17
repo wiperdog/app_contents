@@ -541,16 +541,19 @@ mwWLCLHsQsfhxBWTe9QkOzCwC8sv5Ho127akyRM7QQAAOwAAAAAAAAAAAA==
         } else {
             $("#messageWiperdog").text("")
         }
+
+        //validate user name to remote
+        if (host == 'other' &amp;&amp; userName == '') {
+            $("#messageWiperdog").show()
+            $("#messageWiperdog").text('User connect can not be empty!!!')
+            return false
+        }
+
         //validate with os window
         if (os == 'win' &amp;&amp; host == 'other') {
             if (remoteHost == '') {
                 $("#messageWiperdog").show()
                 $("#messageWiperdog").text('Host IP can not be empty!!!')
-                return false
-            }
-            if (userName == '') {
-                $("#messageWiperdog").show()
-                $("#messageWiperdog").text('User connect can not be empty!!!')
                 return false
             }
             if (password == '') {
@@ -559,6 +562,7 @@ mwWLCLHsQsfhxBWTe9QkOzCwC8sv5Ho127akyRM7QQAAOwAAAAAAAAAAAA==
                 return false
             }
         }
+	
         //validate wiperdog home
         if (wdHome == '') {
             $("#messageWiperdog").show()
