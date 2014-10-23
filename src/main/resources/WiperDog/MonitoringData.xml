@@ -3859,7 +3859,7 @@ function liveTable(data,type,job,limit,istIid,fromDate,toDate,key){
          str = "{ \"" + key +  "\" : {\"url\":\""+dataUrl+"\",\"datatype\":\"json\","+
         "\"colNames\":"+ dataModelStr +
         ",\"colModel\":"+ modelStr +" ,\"rowList\":[10,20,30],"+
-        "\"pager\":\"#livetablePager\", \"viewrecords\": true, \"caption\":\""+job+"\", \"loadonce\": true}}"
+        "\"pager\":\"#livetablePager_" + key + "\"" + ", \"viewrecords\": true, \"caption\":\""+job+"\", \"loadonce\": true}}"
    }
    return str
 }
@@ -4533,17 +4533,19 @@ $(".toggleLiveTableContainer").click(function(){
     for(var i=0;i&lt;keyArr.length;i++){
         var keyName = keyArr[i]
         var subTypeJsonObj = jsonObj[keyName]
-       
-        $("#livetableList_"+keyName).jqGrid(subTypeJsonObj);
-        $("#livetableList_"+keyName).jqGrid('navGrid', "#livetablePager_"+keyName, {
+        if(subTypeJsonObj != null &amp;&amp; subTypeJsonObj["colModel"].length &gt; 0){
+         $("#livetableList_"+keyName).jqGrid(subTypeJsonObj);
+         $("#livetableList_"+keyName).jqGrid('navGrid', "#livetablePager_"+keyName, {
            edit : false,
            add : false,
            del : false,
            search:false
          });
+       }
     }
     
-  }else{ /** Store**/        
+  }else{ /** Store**/ 
+      if(jsonObj != null &amp;&amp; jsonObj["colModel"].length &gt; 0){
       $("#livetableList").jqGrid(jsonObj);
       $("#livetableList").jqGrid('navGrid', "#livetablePager", {
            edit : false,
@@ -4551,7 +4553,8 @@ $(".toggleLiveTableContainer").click(function(){
            del : false,
            search:false
        });
-   }
+    }
+   } 
   $(function(){
                 $('div.livetblContentClass').css({'width':'98%'});
    		$('div.ui-state-default.ui-jqgrid-hdiv').css({'width':'100%'});
