@@ -4025,24 +4025,17 @@ function getData(isExport){
         } else{
 		$("#ExportBtn").attr("disabled", "disabled");
 		$.ajax({
-			type: "POST",
-			crossDomain: true,
-			url: "/xwiki/bin/get/WiperDogLib/MsgPolicyFromMongo?outputSyntax=plain",
-			dataType: 'text',
+            type: "GET",
+            crossDomain: true,
+            url: msgPolicyService + "/GETDATA",
+			dataType: 'json',
 			data: data2send,
 			success: function(result) {
 				var doc = new jsPDF('l');
 				doc.text('Message evaluated policy', 5 , 8)
 				doc.setFontSize(10)
 				doc.text('From date: ' + timeFromStr, 10 , 15)
-				var resultData = JSON.parse(result)
-				var lstCollections = resultData.lstCollections
-				var listFinalData = []
-				var doc = new jsPDF('l');
-				doc.text('Message evaluated policy', 5 , 8)
-				doc.setFontSize(10)
-				doc.text('From date: ' + timeFromStr, 10 , 15)
-				var resultData = JSON.parse(result)
+				var resultData = result//JSON.parse(result)
 				var lstCollections = resultData.lstCollections
 				var listFinalData = []
 				for(var i = lstCollections.length - 1; i &gt; 0; i--){
