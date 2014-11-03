@@ -3953,6 +3953,7 @@ function drawchart(key, chartData, jobType, fromDate, toDate){
      generateJsonArea(pieContainerId, dataPie)
      generateJsonArea(lstPieContainerId, tmpListNameContainer)
      prepareContainerPie(tmpListNameContainer, jobType, key)
+     $("#chart").append("&lt;div id = 'formHide' style = 'clear:both' &gt;&lt;/div&gt;")
    }
 
    if (dataLine != null &amp;&amp; dataLine.length &gt; 0) {
